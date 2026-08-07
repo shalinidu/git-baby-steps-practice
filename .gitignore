@@ -42,3 +42,4 @@ htmlcov/
 # Misc
 .cache/
 *.egg
+work/module-03-report.md
