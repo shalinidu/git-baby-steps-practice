@@ -2,38 +2,21 @@ import argparse
 import os
 import shutil
 import subprocess
+from typing import Any, Dict
 
-
-def format_section(title, items):
-    lines = [f"## {title}", *[f"- {item}" for item in items], ""]
-    return "\n".join(lines)
+from data_fetcher import CsvDataFetcher, DataFetchError, JiraDataFetcher
+from report_builder import build_report
 
 
 def parse_metrics(metrics):
-    items = []
+    items: Dict[str, str] = {}
     for metric in metrics:
         if ":" in metric:
             name, value = metric.split(":", 1)
-            items.append((name.strip(), value.strip()))
+            items[name.strip()] = value.strip()
         else:
-            items.append((metric.strip(), ""))
+            items[metric.strip()] = ""
     return items
-
-
-def build_report(args):
-    report = ["# Weekly Status Report", ""]
-    if args.summary:
-        report.append(format_section("Executive Summary", [args.summary]))
-    report.append(format_section("Accomplishments", args.accomplishments or ["No accomplishments reported."]))
-    report.append(format_section("Blockers", args.blockers or ["No blockers reported."]))
-    report.append(format_section("Next Week's Plan", args.next or ["No plan reported."]))
-
-    metrics = parse_metrics(args.metric)
-    if metrics:
-        lines = [f"- {name}: {value}" if value else f"- {name}" for name, value in metrics]
-        report.append("## Metrics")
-        report.append("\n".join(lines) + "\n")
-    return "\n".join(report).strip() + "\n"
 
 
 def markdown_to_pdf(markdown_text, output_path):
@@ -72,11 +55,40 @@ def main():
     parser.add_argument("--blockers", nargs="*", default=[], help="List blockers")
     parser.add_argument("--next", nargs="*", default=[], help="Next week's plan")
     parser.add_argument("--metric", action="append", default=[], help="Metric in 'Name:Value' form; repeat for multiple metrics")
+    parser.add_argument("--source", choices=["manual", "jira", "csv"], default="manual", help="Data source used to enrich the report")
+    parser.add_argument("--csv-path", help="Path to CSV file when using --source csv")
     parser.add_argument("--output", help="Output file path (markdown or pdf)")
     parser.add_argument("--pdf", action="store_true", help="Generate a PDF report")
     args = parser.parse_args()
 
-    content = build_report(args)
+    context: Dict[str, Any] = {
+        "summary": args.summary,
+        "accomplishments": args.accomplishments,
+        "blockers": args.blockers,
+        "next_plan": args.next,
+        "metrics": parse_metrics(args.metric),
+    }
+
+    if args.source == "jira":
+        try:
+            fetcher = JiraDataFetcher()
+            payload = fetcher.fetch()
+            context["jira_data"] = payload["jira"]
+            context["metrics"].update(payload.get("metrics", {}))
+        except DataFetchError as exc:
+            raise SystemExit(f"Failed to fetch Jira data: {exc}")
+    elif args.source == "csv":
+        if not args.csv_path:
+            raise SystemExit("--csv-path is required when --source csv is specified.")
+        try:
+            fetcher = CsvDataFetcher(args.csv_path)
+            payload = fetcher.fetch()
+            context["csv_data"] = payload
+            context["metrics"].update({"csv_rows": payload.get("row_count", 0)})
+        except DataFetchError as exc:
+            raise SystemExit(f"Failed to load CSV data: {exc}")
+
+    content = build_report(context)
     if args.output:
         output_path = args.output
         if args.pdf and not output_path.lower().endswith(".pdf"):
