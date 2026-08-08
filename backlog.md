@@ -19,6 +19,8 @@
 - [ ] Add a generic connector interface for finance, capacity, and QA data
 - [ ] Implement CSV import fallback for non-API data sources
 - [ ] Wire Jira and CSV data sources into the report generation workflow
+- [ ] Wire CSV data sources into the report generation workflow
+- [ ] Wire Jira data sources into the report generation workflow
 - [ ] Ensure secure handling of environment variables and avoid hard-coded credentials
 - [ ] Add a configuration module or pattern for extensible connector registration
 

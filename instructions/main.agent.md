@@ -8,3 +8,5 @@
   + Keywords: meeting notes, action items, meeting summary
 - [`./instructions/generate-jira-query.agent.md`](./generate-jira-query.agent.md) — JQL queries for common reporting scenarios.
   + Keywords: jira query, JQL, reporting query
+- [`./instructions/jira-integration.agent.md`](./jira-integration.agent.md) — Jira issue integration payloads and automation support.
+  + Keywords: Jira integration, issue payload, Jira API
