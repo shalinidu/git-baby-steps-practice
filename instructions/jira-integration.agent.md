@@ -2,12 +2,14 @@
 
 - Input format:
   + Receive a Jira issue definition with fields such as `project`, `issueType`, `summary`, `description`, `priority`, `labels`, and optional `components` or `assignee`.
+  + Require `assignee` to be a Jira account ID or user key, not an email address.
   + Accept issue details as structured text or a simple YAML/JSON-like block.
   + Accept Jira API endpoint and authentication context when integration output is required.
 - Processing steps:
   + Parse the provided issue fields and verify required values are present.
   + Normalize field values to Jira-compatible names and data types.
   + Validate `project`, `issueType`, `priority`, and any optional fields against common Jira constraints.
+  + Ensure `assignee` is specified as a Jira account ID or user key, not an email address.
   + Convert the input into the target Jira payload or integration template.
 - Output format:
   + Provide output as a concise Markdown code block containing either:
