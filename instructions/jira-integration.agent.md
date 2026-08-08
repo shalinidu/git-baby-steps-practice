@@ -5,6 +5,7 @@
   + Require `assignee` to be a Jira account ID or user key, not an email address.
   + Accept issue details as structured text or a simple YAML/JSON-like block.
   + Accept Jira API endpoint and authentication context when integration output is required.
+  + Include `project` as a required field in any Jira query generation request.
 - Processing steps:
   + Parse the provided issue fields and verify required values are present.
   + Normalize field values to Jira-compatible names and data types.
