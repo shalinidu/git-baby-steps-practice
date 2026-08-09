@@ -14,6 +14,7 @@
 - [ ] Implement blocked issue aggregation and appendix details
 - [ ] Add prior sprint comparison support for active sprint plus prior 2 sprints
 - [ ] Add summary metrics for total issues, done issues, blocked issues, completion percentage, and remaining effort
+- [ ] Update Jira story status on explicit confirmation to the user input status
 
 ## Integration
 - [ ] Add a generic connector interface for finance, capacity, and QA data
