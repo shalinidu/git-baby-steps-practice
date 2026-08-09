@@ -18,3 +18,6 @@
 - [`./instructions/calculate-compound-interest.agent.md`](./calculate-compound-interest.agent.md) — use the compound interest CLI tool for financial growth calculations.
   + Battle-tested: true
   + Keywords: compound interest, financial calculation, CLI tool
+- [`./instructions/use-test-coverage.agent.md`](./use-test-coverage.agent.md) — calculate total test coverage from generated and written test cases.
+  + Battle-tested: true
+  + Keywords: test coverage, CLI tool, coverage calculation

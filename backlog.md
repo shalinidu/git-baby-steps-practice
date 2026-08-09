@@ -29,6 +29,7 @@
 - [ ] Add unit tests for report builder output formatting
 - [ ] Validate PDF generation under both Python package and Pandoc fallback paths
 - [ ] Add test coverage for CSV fallback data ingestion
+- [ ] Calculate the number of test cases generated and the total coverage
 - [ ] Add error-handling tests for missing credentials and invalid CSV paths
 
 ## Documentation
