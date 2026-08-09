@@ -2,9 +2,9 @@
 
 ## Setup
 - [x] Review existing repo files and current report generator implementation
-- [ ] Confirm environment and dependency requirements for PDF generation (`markdown`, `weasyprint`, `pandoc`)
-- [ ] Add `README` usage examples for report generation and environment setup
-- [ ] Define environment variables for Jira credentials and board settings
+- [ ] Confirm environment and dependency requirements for PDF generation (`markdown`, `weasyprint`, `pandoc`) (issue #1)
+- [ ] Add `README` usage examples for report generation and environment setup (issue #2)
+- [ ] Define environment variables for Jira credentials and board settings (issue #3)
 
 ## Core Features
 - [ ] Implement Jira data ingestion for active sprint and issue status details
