@@ -15,3 +15,6 @@
 - [`./instructions/jira-integration.agent.md`](./jira-integration.agent.md) — Jira issue integration payloads and automation support.
   + Battle-tested: true
   + Keywords: Jira integration, issue payload, Jira API
+- [`./instructions/calculate-compound-interest.agent.md`](./calculate-compound-interest.agent.md) — use the compound interest CLI tool for financial growth calculations.
+  + Battle-tested: true
+  + Keywords: compound interest, financial calculation, CLI tool
