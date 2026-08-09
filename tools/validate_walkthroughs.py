@@ -1,4 +1,6 @@
+import argparse
 import re
+import sys
 from pathlib import Path
 
 RULES = [
@@ -15,14 +17,54 @@ PLACEHOLDERS = ["Objective 1", "Objective 2", "Step 1", "Step 2", "TBD", "TODO",
 REQUIRED_SECTIONS = ["Overview", "Objectives", "Walkthrough", "Summary", "Quiz"]
 
 
-def check_file(path: Path):
+def parse_args():
+    parser = argparse.ArgumentParser(description="Validate module walkthrough files.")
+    parser.add_argument(
+        "--modules-dir",
+        default="modules",
+        help="Path to the modules root directory containing module-XX subdirectories.",
+    )
+    parser.add_argument(
+        "--module-dir-pattern",
+        default=r"module-\d{2}",
+        help="Regex pattern for module folders under the modules directory.",
+    )
+    parser.add_argument(
+        "--filename",
+        default="walkthrough.md",
+        help="Filename to validate under each module directory.",
+    )
+    parser.add_argument(
+        "--glob-pattern",
+        default="**/walkthrough.md",
+        help="Glob pattern to search for files under the modules directory.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print files that would be validated and exit without performing validation.",
+    )
+    parser.add_argument(
+        "--confirm",
+        action="store_true",
+        help="Prompt for confirmation before validating files.",
+    )
+    return parser.parse_args()
+
+
+def check_file(path: Path, base_path: Path, module_dir_pattern: str, filename: str):
     text = path.read_text()
     lines = text.splitlines()
     errors = []
 
     # Rule 1: Filename and location
-    if not re.match(r"modules/module-\d{2}/walkthrough\.md$", str(path).replace('\\', '/')):
-        errors.append("Rule 1: File must be located at modules/module-XX/walkthrough.md")
+    try:
+        relative_path = path.relative_to(base_path).as_posix()
+    except ValueError:
+        relative_path = path.as_posix()
+
+    if not re.match(rf"^{module_dir_pattern}/{re.escape(filename)}$", relative_path):
+        errors.append(f"Rule 1: File must be located at <modules-dir>/{module_dir_pattern}/{filename}")
 
     # Rule 2: Title format
     if not lines or not re.match(r"^# Module \d{2} Walkthrough$", lines[0].strip()):
@@ -60,10 +102,30 @@ def check_file(path: Path):
 
 
 def main():
-    base_path = Path(__file__).resolve().parents[1] / "modules"
+    args = parse_args()
+    base_path = Path(args.modules_dir).resolve()
+    if not base_path.exists():
+        print(f"Error: modules directory not found: {base_path}", file=sys.stderr)
+        return 1
+
+    files = sorted(base_path.rglob(args.glob_pattern))
+    if args.dry_run:
+        print("Dry run mode: files that would be validated:")
+        for path in files:
+            print(f"- {path.relative_to(base_path)}")
+        print(f"\nTotal files found: {len(files)}")
+        return 0
+
+    if args.confirm:
+        print(f"Ready to validate {len(files)} files under {base_path}.")
+        answer = input("Continue? [y/N] ").strip().lower()
+        if answer not in ("y", "yes"):
+            print("Validation aborted.")
+            return 0
+
     results = []
-    for path in sorted(base_path.rglob("walkthrough.md")):
-        errors = check_file(path)
+    for path in files:
+        errors = check_file(path, base_path, args.module_dir_pattern, args.filename)
         results.append((path.relative_to(base_path.parent), errors))
 
     print("Validation Summary")
