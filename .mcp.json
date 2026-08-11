@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "echo-macos": {
+      "command": "/bin/zsh",
+      "args": ["./path/to/mcp-echo.sh"]
+    },
+    "get_date": {
+      "command": "/bin/zsh",
+      "args": ["./path/to/get-date.sh"]
+    },
+    "jira": {
+      "command": "/bin/zsh",
+      "args": ["./path/to/jira-integration.sh"]
+    },
+    "github": { 
+      "type": "http", 
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}
