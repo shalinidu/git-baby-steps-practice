@@ -1,0 +1,3 @@
+[submodule "jira-confluence-automation"]
+	path = jira-confluence-automation
+	url = https://github.com/shalinidu/jira-confluence-automation.git
